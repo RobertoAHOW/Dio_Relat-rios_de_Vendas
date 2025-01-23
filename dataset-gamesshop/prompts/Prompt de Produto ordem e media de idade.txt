@@ -1,0 +1,36 @@
+## Ordenação de Vendas por País e Produto
+
+Ordene as vendas de produto, do mais vendido para o menos vendido em cada país, exibindo o país, produto e a quantidade vendida.
+
+```python
+# Agrupar os dados por país e produto e somar as quantidades vendidas
+sales_by_country_product = df.groupby(['delivery_country', 'product_sold'])['quantity'].sum()
+
+# Ordenar os resultados dentro de cada país, do mais vendido para o menos vendido
+sales_by_country_product = sales_by_country_product.sort_values(ascending=False).reset_index()
+
+# Renomear as colunas para clareza
+sales_by_country_product.columns = ['País', 'Produto', 'Quantidade Vendida']
+
+# Converter os dados para markdown
+sales_by_country_product_md = sales_by_country_product.to_markdown(index=False)
+sales_by_country_product_md
+
+#Código em Python
+
+from datetime import datetime
+
+# Calcular a idade dos compradores
+df['buyer_birth_date'] = pd.to_datetime(df['buyer_birth_date'])
+current_year = datetime.now().year
+df['buyer_age'] = current_year - df['buyer_birth_date'].dt.year
+
+# Agrupar por país e produto, e calcular a média de idade (arredondada para número inteiro)
+average_age_by_country_product = df.groupby(['delivery_country', 'product_sold'])['buyer_age'].mean().round().astype(int).reset_index()
+
+# Renomear as colunas para clareza
+average_age_by_country_product.columns = ['País', 'Produto', 'Média de Idade']
+
+# Converter os dados para markdown
+average_age_by_country_product_md = average_age_by_country_product.to_markdown(index=False)
+average_age_by_country_product_md

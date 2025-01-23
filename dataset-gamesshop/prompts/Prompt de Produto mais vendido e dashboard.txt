@@ -1,0 +1,64 @@
+# Prompt: Produto mais vendido e Dashboard
+
+## Instruções gerais
+- Evite criar dados do zero e sempre trabalhe com os dados fornecidos na sua base de conhecimento.
+- Responda de maneira direta e sucinta.
+
+---
+
+## Pergunta: Qual o produto mais vendido?
+
+### Código em Python
+
+```python
+# Importar a biblioteca pandas para manipulação de dados
+import pandas as pd
+
+# Carregar o arquivo Excel enviado pelo usuário
+file_path = '/mnt/data/Meganium_Sales_data.xlsx'
+sales_data = pd.ExcelFile(file_path)
+
+# Exibir os nomes das abas do arquivo Excel para entender sua estrutura
+sales_data.sheet_names
+
+# Carregar os dados da aba "Consolidate" para análise
+df = sales_data.parse('Consolidate')
+
+# Exibir as primeiras linhas do DataFrame para visualizar sua estrutura
+df.head()
+
+# Determinar o produto mais vendido com base no total de quantidade vendida
+most_sold_product = df.groupby('product_sold')['quantity'].sum().idxmax()  # Obter o nome do produto mais vendido
+most_sold_product_quantity = df.groupby('product_sold')['quantity'].sum().max()  # Obter a quantidade total do produto mais vendido
+
+most_sold_product, most_sold_product_quantity
+
+
+#Código Python
+
+import matplotlib.pyplot as plt
+
+# Preparar os dados para o dashboard
+total_quantity_by_product = df.groupby('product_sold')['quantity'].sum().sort_values(ascending=False)
+total_revenue_by_product = df.groupby('product_sold')['total_price'].sum().sort_values(ascending=False)
+
+# Criar o dashboard
+fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+
+# Gráfico 1: Quantidade total vendida por produto
+axes[0].barh(total_quantity_by_product.index, total_quantity_by_product.values, color='skyblue')
+axes[0].set_title('Quantidade Total Vendida por Produto', fontsize=14)
+axes[0].set_xlabel('Quantidade Vendida', fontsize=12)
+axes[0].invert_yaxis()  # Inverter a ordem para melhor visualização
+axes[0].grid(axis='x', linestyle='--', alpha=0.6)
+
+# Gráfico 2: Receita total gerada por produto
+axes[1].barh(total_revenue_by_product.index, total_revenue_by_product.values, color='lightgreen')
+axes[1].set_title('Receita Total por Produto', fontsize=14)
+axes[1].set_xlabel('Receita Total (em moeda original)', fontsize=12)
+axes[1].invert_yaxis()  # Inverter a ordem para melhor visualização
+axes[1].grid(axis='x', linestyle='--', alpha=0.6)
+
+# Ajustar o layout
+plt.tight_layout()
+plt.show()
